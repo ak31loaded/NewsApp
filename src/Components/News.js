@@ -21,6 +21,7 @@ export class News extends Component {
             psize:18,
             totalResults:0
         }
+        
 
     }
     async componentDidMount() {
@@ -32,7 +33,11 @@ export class News extends Component {
         this.setState({ articles: pdata.articles,
             totalResults:pdata.totalResults
          });
+         let cat=this.props.category
+         cat=(cat[0].toUpperCase() + cat.substring(1))
+         document.title=cat+" - NewsMonkey";
     }
+
     
 
     fetchMoreData = async() => {
@@ -53,7 +58,7 @@ export class News extends Component {
         return (
             <>
                 
-                    <h2 className='my-4' style={{textAlign: "center"}}>The Top Headlines are</h2>
+                    <h2 className='my-4' style={{textAlign: "center"}}>The Top {this.props.category} News are</h2>
                     <div style={{textAlign: "center" }}>
 
                     <InfiniteScroll
