@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-function Navbar(props) {
-    console.log(props);
+const Navbar=()=> {
+    
     return (
         <>
         
-            <nav className="navbar navbar-expand-lg bg-light" >
+            <nav className="navbar navbar-expand-lg fixed-top bg-light" >
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/">NewsMonkey</Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

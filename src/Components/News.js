@@ -1,71 +1,65 @@
-import React, { Component } from 'react'
+import React, { useEffect,useState } from 'react'
 import Newscomponent from './Newscomponent'
 import PropTypes from 'prop-types'
 import InfiniteScroll from "react-infinite-scroll-component";
 import BeatLoader from "react-spinners/BeatLoader"
-export class News extends Component {
-    static defaultProps = {
-        category: ""
-    }
-    static propTypes = {
-        category: PropTypes.string
-    }
-    articles = []
-    constructor() {
-        super();
-        this.state = {
-            articles: this.articles,
-            loading: false,
-            page: 0,
-            hasMore :true,
-            psize:18,
-            totalResults:0
-        }
+const News=(props)=> {
+    
+    
+    const [articles, setarticles] = useState([]);
+    
+    const [page, setpage] = useState(0);
+    
+    const [totalResults, settotalResults] = useState(0)
+        
+   
         
 
-    }
-    async componentDidMount() {
-        this.setState({page:this.state.page+1})
-        let url = `https://newsapi.org/v2/top-headlines?country=in&category=${this.props.category}&page=${this.state.page}&apiKey=9b74eceaa6a94418a20826771b794cf0`;
+    useEffect(() => {
+      update();
+      
+    }, [])
+    
+    const update=async()=> {
+        setpage(page+1);
+        let url = `https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&page=${page}&apiKey=9b74eceaa6a94418a20826771b794cf0`;
         let data = await fetch(url);
         let pdata = await data.json();
         console.log(pdata)
-        this.setState({ articles: pdata.articles,
-            totalResults:pdata.totalResults
-         });
-         let cat=this.props.category
+        setarticles(pdata.articles);
+        settotalResults(pdata.totalResults);
+         let cat=props.category
          cat=(cat[0].toUpperCase() + cat.substring(1))
          document.title=cat+" - NewsMonkey";
-    }
+    } 
 
     
 
-    fetchMoreData = async() => {
+    const fetchMoreData = async() => {
       
-       let url = `https://newsapi.org/v2/top-headlines?country=in&category=${this.props.category}&page=${this.state.page+1}&apiKey=9b74eceaa6a94418a20826771b794cf0`;
-       this.setState({page:this.state.page+1})
-       console.log(this.state.page);
+       let url = `https://newsapi.org/v2/top-headlines?country=in&category=${props.category}&page=${page+1}&apiKey=9b74eceaa6a94418a20826771b794cf0`;
+       setpage(page+1);
+       
         let data = await fetch(url);
         let pdata = await data.json();
-        console.log(pdata)
-        this.setState({ articles: this.state.articles.concat(pdata.articles), totalResults:pdata.totalResults });
-        console.log(pdata.totalResults);
-        console.log(this.state.articles.length);
+        setarticles(articles.concat(pdata.articles));
+        settotalResults(pdata.totalResults);
+        
         
     };
 
-    render() {
+
         return (
             <>
                 
-                    <h2 className='my-4' style={{textAlign: "center"}}>The Top {this.props.category} News are</h2>
+                    <h2  style={{textAlign: "center",margin:"70px auto 20px"}} >The Top {props.category} News are</h2>
                     <div style={{textAlign: "center" }}>
 
                     <InfiniteScroll
-                        dataLength={this.state.articles.length}
-                        next={this.fetchMoreData}
+                        dataLength={articles.length}
+                        next={fetchMoreData}
                         
-                        hasMore={this.state.articles.length!==this.state.totalResults}
+                        hasMore={articles.length!==totalResults}
                         
                         loader=<BeatLoader color="#36d7b7"  />
                         endMessage={
@@ -76,7 +70,7 @@ export class News extends Component {
                     >
                     <div className='container my-4'>
                         <div className='row my-4 mb-4'>
-                            {this.state.articles.map((element) => {
+                            {articles.map((element) => {
                                 return <div className="col-md-4" key={element.url}>
                                     <Newscomponent title={element.title} description={element.description} imgurl={element.urlToImage} url={element.url} />
                                 </div>
@@ -92,7 +86,13 @@ export class News extends Component {
                 
             </>
         )
-    }
+    
+}
+News.defaultProps = {
+    category: ""
+}
+News.propTypes = {
+    category: PropTypes.string
 }
 
 export default News
